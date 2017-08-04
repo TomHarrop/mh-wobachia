@@ -9,6 +9,8 @@ fi
 
 samtools=bin/samtools/samtools
 
+wolbachia_genomes="data/wolbachia_genomes.fasta"
+my_genome="${outdir}/wolbachia_genomes.fasta"
 pe_reads="data/pe_merged.fastq.gz"
 bwa_log="${outdir}/bwamem.log"
 samtools_log="${outdir}/samtools.log"
@@ -16,13 +18,14 @@ unsorted_sam="${outdir}/pe_mapped_unsorted.sam"
 output_bam="${outdir}/pe_mapped.bam"
 
 printf "[ %s: Running bwa index ]\n" "$(date)"
-bwa index "${nanopore_assembly}"
+cp "${wolbachia_genomes}" "${my_genome}"
+bwa index "${my_genome}"
 
 printf "[ %s: Running bwa mem ]\n" "$(date)"
 bwa mem \
     -t 100 \
     -p \
-    "${nanopore_assembly}" \
+    "${my_genome}" \
     "${pe_reads}" \
     > "${unsorted_sam}" \
     2> "${bwa_log}"
