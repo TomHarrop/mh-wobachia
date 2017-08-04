@@ -1,0 +1,45 @@
+#!/usr/bin/env bash
+
+set -eu
+
+outdir="output/pe_mapping"
+if [[ ! -e "${outdir}" ]]; then
+    mkdir -p "${outdir}"
+fi
+
+samtools=bin/samtools/samtools
+
+pe_reads="data/pe_merged.fastq.gz"
+bwa_log="${outdir}/bwamem.log"
+samtools_log="${outdir}/samtools.log"
+unsorted_sam="${outdir}/pe_mapped_unsorted.sam"
+output_bam="${outdir}/pe_mapped.bam"
+
+printf "[ %s: Running bwa index ]\n" "$(date)"
+bwa index "${nanopore_assembly}"
+
+printf "[ %s: Running bwa mem ]\n" "$(date)"
+bwa mem \
+    -t 100 \
+    -p \
+    "${nanopore_assembly}" \
+    "${pe_reads}" \
+    > "${unsorted_sam}" \
+    2> "${bwa_log}"
+
+printf "[ %s: Running samtools sort ]\n" "$(date)"
+"${samtools}" sort \
+    -@ 50 \
+    -m 7G \
+    -l 9 \
+    -o "${output_bam}" \
+    "${unsorted_sam}" \
+    2> "${samtools_log}"
+
+printf "[ %s: Running samtools index ]\n" "$(date)"
+"${samtools}" index "${output_bam}"
+
+printf "[ %s: Removing temporary samfile %s ]\n" "$(date)" "${unsorted_sam}"
+rm "${unsorted_sam}"
+
+exit 0
