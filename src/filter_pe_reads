@@ -22,7 +22,7 @@ cmd=( bin/bbmap/seal.sh
         "trd=t"
         "editdistance=2"
         "ambiguous=all"
-        "mincoveredfraction=0.8" )
+        "minkmerfraction=0.25" )
 cmd_log="${outdir}/seal.log"
 
 shopt -s extglob
