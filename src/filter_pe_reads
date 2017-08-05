@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+set -eu
+
+outdir="output/pe_seal"
+if [[ ! -e "${outdir}" ]]; then
+    mkdir -p "${outdir}"
+fi
+
+pe_reads="data/pe_merged.fastq.gz"
+wolbachia_genomes="data/wolbachia_genomes.fasta"
+filtered_pe_reads="${outdir}/pe_filtered.fastq.gz"
+
+printf "[ %s: Running seal ]\n" "$(date)"
+cmd=( bin/bbmap/seal.sh 
+        "in=${pe_reads}"
+        "ref=${wolbachia_genomes}"
+        "out=${filtered_pe_reads}"
+        "stats=${outdir}/stats.txt"        
+        "refstats=${outdir}/refstats.txt"
+        "ziplevel=9"
+        "trd=t"
+        "editdistance=5"
+        "ambiguous=all"
+        "mincoveredfraction=0.8" )
+cmd_log="${outdir}/seal.log"
+
+shopt -s extglob
+printf "Running command:\n"
+printf "%s " "${cmd[@]//+([[:blank:]])/ }"
+printf "\n"
+shopt -u extglob
+
+"${cmd[@]}" 2> "${cmd_log}"
+
+exit 1
