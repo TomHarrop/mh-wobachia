@@ -8,7 +8,7 @@ if [[ ! -e "${outdir}" ]]; then
 fi
 
 pe_reads="data/pe_merged.fastq.gz"
-wolbachia_genomes="data/wolbachia_genomes.fasta"
+wolbachia_genomes="output/genomes/wolbachia_genomes.fasta"
 filtered_pe_reads="${outdir}/pe_filtered.fastq.gz"
 
 printf "[ %s: Running seal ]\n" "$(date)"
