@@ -13,8 +13,8 @@ filtered_pe_reads="${outdir}/pe_filtered.fastq.gz"
 
 printf "[ %s: Running seal ]\n" "$(date)"
 cmd=( bin/bbmap/seal.sh
-        -Xmx500g 
-        "prealloc=t" 
+        -Xmx800g 
+        "prealloc=f" 
         "in=${pe_reads}"
         "ref=${wolbachia_genomes}"
         "out=${filtered_pe_reads}"
