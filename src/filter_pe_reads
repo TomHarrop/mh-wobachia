@@ -20,9 +20,9 @@ cmd=( bin/bbmap/seal.sh
         "refstats=${outdir}/refstats.txt"
         "ziplevel=9"
         "trd=t"
-        "qhdist=5"
+        "qhdist=3"
         "ambiguous=all"
-        "minkmerfraction=0.25" )
+        "minkmerhits=5" )
 cmd_log="${outdir}/seal.log"
 
 shopt -s extglob
