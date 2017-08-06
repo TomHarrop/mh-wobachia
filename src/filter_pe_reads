@@ -12,7 +12,9 @@ wolbachia_genomes="data/wolbachia_genomes.fasta"
 filtered_pe_reads="${outdir}/pe_filtered.fastq.gz"
 
 printf "[ %s: Running seal ]\n" "$(date)"
-cmd=( bin/bbmap/seal.sh 
+cmd=( bin/bbmap/seal.sh
+        -Xmx500g 
+        "prealloc=t" 
         "in=${pe_reads}"
         "ref=${wolbachia_genomes}"
         "out=${filtered_pe_reads}"
