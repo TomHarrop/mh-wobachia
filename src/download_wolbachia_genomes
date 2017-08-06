@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+
+set -eu
+
+outdir="output/genomes"
+if [[ ! -e "${outdir}" ]]; then
+    mkdir -p "${outdir}"
+fi
+
+cmd=( ncbi-genome-download
+        --assembly-level complete
+        --genus "Wolbachia"
+        --output-folder "${outdir}"
+        --parallel 10
+        --retries 3
+        --verbose
+        bacteria )
+    
+cmd_log="${outdir}/ncbi_genome_download.log"
+
+shopt -s extglob
+printf "Running command:\n"
+printf "%s " "${cmd[@]//+([[:blank:]])/ }"
+printf "\n"
+shopt -u extglob
+
+"${cmd[@]}" 2> "${cmd_log}"
+
+exit 0
