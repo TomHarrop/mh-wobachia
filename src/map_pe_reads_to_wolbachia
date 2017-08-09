@@ -9,10 +9,10 @@ fi
 
 samtools=bin/samtools/samtools
 
-main_genome="output/genomes/wolbachia_wmel.fasta"
-alt_genome="output/genomes/wolbachia_others.fasta"
+main_genome="output/genomes/wolbachia_all.fasta"
 my_main_genome="${outdir}/ref.fasta"
-my_alt_genome="${outdir}/ref.alt.fasta"
+alt_idx="output/genomes/wolbachia_all.alt"
+my_alt_idx="${outdir}/ref.alt"
 
 pe_reads="data/pe_merged.fastq.gz"
 bwa_log="${outdir}/bwamem.log"
@@ -22,9 +22,8 @@ output_bam="${outdir}/pe_mapped.bam"
 
 printf "[ %s: Running bwa index ]\n" "$(date)"
 cp "${main_genome}" "${my_main_genome}"
-cp "${alt_genome}" "${my_alt_genome}"
+cp "${alt_idx}" "${my_alt_idx}"
 bwa index "${my_main_genome}"
-bwa index "${my_alt_genome}"
 
 printf "[ %s: Running bwa mem ]\n" "$(date)"
 bwa mem \
