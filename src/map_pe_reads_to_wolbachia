@@ -12,7 +12,7 @@ samtools=bin/samtools/samtools
 main_genome="output/genomes/wolbachia_all.fasta"
 my_main_genome="${outdir}/ref.fasta"
 alt_idx="output/genomes/wolbachia_all.alt"
-my_alt_idx="${outdir}/ref.alt"
+my_alt_idx="${outdir}/ref.fasta.alt"
 
 pe_reads="data/pe_merged.fastq.gz"
 bwa_log="${outdir}/bwamem.log"
