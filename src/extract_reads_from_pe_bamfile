@@ -3,9 +3,9 @@
 set -eu
 
 samtools=bin/samtools/samtools
-mapped_pe_reads="output/output/pe_mapping/pe_mapped.bam"
+mapped_pe_reads="output/pe_mapping/pe_mapped.bam"
 
-outdir="output/mt_contig/mapping"
+outdir="output/pe_mapping/mapped_reads"
 if [[ ! -e "${outdir}" ]]; then
     mkdir -p "${outdir}"
 fi
