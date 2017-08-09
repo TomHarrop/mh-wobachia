@@ -1,0 +1,56 @@
+#!/usr/bin/env bash
+
+set -eu
+
+samtools=bin/samtools/samtools
+mapped_pe_reads="output/output/pe_mapping/pe_mapped.bam"
+
+outdir="output/mt_contig/mapping"
+if [[ ! -e "${outdir}" ]]; then
+    mkdir -p "${outdir}"
+fi
+
+singletons="${outdir}/singletons.fastq"
+
+# mapped SAM statistics (and mapped raw reads)
+"${samtools}" view -h -F 12 ${mapped_pe_reads} \
+    | bin/bbmap/pileup.sh \
+        in=stdin.sam \
+        out=stdout.sam \
+        "hist=${outdir}/hist.txt" \
+        "basecov=${outdir}/basecov.txt" \
+        "bincov=${outdir}/bincov.txt" \
+    | bin/bbmap/reformat.sh \
+        in=stdin.sam \
+        out=stdout.fastq \
+        mappedonly=t \
+        pairedonly=t \
+        "bhist=${outdir}/bhist_mapped.txt" \
+        "qhist=${outdir}/qhist_mapped.txt" \
+        "qchist=${outdir}/qchist_mapped.txt" \
+        "aqhist=${outdir}/aqhist_mapped.txt" \
+        "bqhist=${outdir}/bqhist_mapped.txt" \
+        "lhist=${outdir}/lhist_mapped.txt" \
+        "gchist=${outdir}/gchist_mapped.txt" \
+        gcbins=auto \
+        "ehist=${outdir}/ehist_mapped.txt" \
+        "qahist=${outdir}/qahist_mapped.txt" \
+        "indelhist=${outdir}/indelhist_mapped.txt" \
+        "mhist=${outdir}/mhist_mapped.txt" \
+        "idhist=${outdir}/idhist_mapped.txt" \
+        idbins=auto \
+    | bin/bbmap/repair.sh \
+        in=stdin.fastq \
+        repair=t \
+        allowidenticalnames=t \
+        out=stdout.fastq \
+        "outs=${singletons}" \
+    | bin/bbmap/reformat.sh \
+        in=stdin.fastq \
+        interleaved=t \
+        "out=${outdir}/mapped_reads.fastq.gz" \
+        zl=9 \
+        addslash=t \
+        spaceslash=f
+
+rm "${singletons}"
