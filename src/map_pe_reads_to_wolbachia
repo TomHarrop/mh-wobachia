@@ -18,6 +18,7 @@ pe_reads="data/pe_merged.fastq.gz"
 bwa_log="${outdir}/bwamem.log"
 samtools_log="${outdir}/samtools.log"
 unsorted_sam="${outdir}/pe_mapped_unsorted.sam"
+mapped_reads_only="${outdir}/pe_mapped_filtered.bam"
 output_bam="${outdir}/pe_mapped.bam"
 
 printf "[ %s: Running bwa index ]\n" "$(date)"
@@ -26,13 +27,17 @@ cp "${alt_idx}" "${my_alt_idx}"
 bwa index "${my_main_genome}"
 
 printf "[ %s: Running bwa mem ]\n" "$(date)"
+printf "[ %s: Filtering mapping results ]\n" "$(date)"
 bwa mem \
     -t 100 \
     -p \
     "${my_main_genome}" \
     "${pe_reads}" \
-    > "${unsorted_sam}" \
-    2> "${bwa_log}"
+    2> "${bwa_log}" \
+    | "${samtools}" view \
+    --threads 50 \
+    -F 12 \
+    -b -o "${mapped_reads_only}"
 
 printf "[ %s: Running samtools sort ]\n" "$(date)"
 "${samtools}" sort \
@@ -40,13 +45,14 @@ printf "[ %s: Running samtools sort ]\n" "$(date)"
     -m 7G \
     -l 9 \
     -o "${output_bam}" \
-    "${unsorted_sam}" \
+    "${mapped_reads_only}" \
     2> "${samtools_log}"
 
 printf "[ %s: Running samtools index ]\n" "$(date)"
 "${samtools}" index "${output_bam}"
 
-printf "[ %s: Removing temporary samfile %s ]\n" "$(date)" "${unsorted_sam}"
-rm "${unsorted_sam}"
+printf "[ %s: Removing temporary samfile %s ]\n" \
+    "$(date)" "${mapped_reads_only}"
+rm "${mapped_reads_only}"
 
 exit 0
